@@ -8,20 +8,20 @@
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#f6f6f7;color:#191a20;font-family:Arial,sans-serif}
-header{background:white;border-bottom:1px solid #eee;padding:18px 5%;display:flex;justify-content:space-between;align-items:center;gap:15px}
+header{background:#fff;border-bottom:1px solid #e5e5e9;padding:18px 5%;display:flex;justify-content:space-between;align-items:center;gap:15px}
 .brand{font-weight:bold;text-decoration:none;color:#191a20}
 nav{display:flex;gap:15px;flex-wrap:wrap}
-nav a{color:#333;text-decoration:none;font-size:13px}
-main{max-width:1000px;margin:40px auto;padding:0 16px}
+nav a{font-size:13px;color:#333;text-decoration:none}
+main{max-width:1000px;margin:35px auto;padding:0 16px}
 .layout{display:grid;grid-template-columns:1.2fr .8fr;gap:20px}
-.card{background:white;border:1px solid #e6e6e8;border-radius:14px;padding:25px}
-h1{font-family:Georgia,serif;font-size:38px;margin:12px 0}
+.card{background:#fff;border:1px solid #e5e5e9;border-radius:14px;padding:25px}
+h1{font:500 38px Georgia,serif;margin:12px 0}
 h2{font-size:19px}
-.muted{color:#747783;font-size:14px;line-height:1.6}
-button{cursor:pointer;border:1px solid #ddd;border-radius:8px;background:white;padding:13px;font-weight:bold}
-.primary{background:#191a20;color:white;border-color:#191a20}
+.muted{font-size:14px;line-height:1.6;color:#737783}
+button{cursor:pointer;border:1px solid #ddd;border-radius:8px;padding:13px;font-weight:bold;background:#fff}
+button:disabled{opacity:.6;cursor:wait}
 .wide{width:100%}
-button:disabled{opacity:.6}
+.primary{background:#191a20;color:#fff;border-color:#191a20}
 .field{margin:13px 0}
 label{display:block;font-size:12px;font-weight:bold;margin-bottom:7px}
 input,textarea{width:100%;padding:12px;border:1px solid #d8d9df;border-radius:8px;font:inherit}
@@ -30,7 +30,7 @@ textarea{min-height:75px;resize:vertical}
 .hidden{display:none!important}
 .status{font-size:13px;line-height:1.5;overflow-wrap:anywhere}
 .error{color:#b42318}.success{color:#18794e}
-.google{font-size:16px;margin-right:8px;color:#4285f4}
+.google-mark{font-size:18px;color:#4285f4;margin-right:9px}
 .profile{display:flex;align-items:center;gap:12px;margin:20px 0}
 .avatar{width:48px;height:48px;border-radius:50%;object-fit:cover;background:#eee}
 .section{border-top:1px solid #eee;margin-top:22px;padding-top:20px}
@@ -42,14 +42,12 @@ footer{text-align:center;background:#191a20;color:#ddd;padding:22px;font-size:12
 </style>
 </head>
 <body>
-
 <header>
   <a class="brand" href="./index.html">B.D. Fashion Store</a>
   <nav>
     <a href="./index.html">Shop</a>
     <a href="./tracking.html">Track Order</a>
     <a href="./cart.html">Cart</a>
-    <a href="./admin.html">Admin</a>
   </nav>
 </header>
 
@@ -58,40 +56,22 @@ footer{text-align:center;background:#191a20;color:#ddd;padding:22px;font-size:12
 <section class="card">
   <div class="muted">CUSTOMER ACCOUNT</div>
   <h1 id="pageTitle">Sign in</h1>
-  <p class="muted" id="intro">Sign in with Google, then add your mobile number and delivery address.</p>
+  <p class="muted" id="intro">Continue with Google to access your account.</p>
 
   <div id="signedOut">
     <button class="wide" id="googleLogin" type="button">
-      <span class="google">G</span> Continue with Google
+      <span class="google-mark">G</span>Continue with Google
     </button>
     <p class="status" id="loginStatus" aria-live="polite"></p>
-
-    <div class="section">
-      <h2>Email and Password</h2>
-      <form id="emailForm">
-        <div class="field">
-          <label for="email">Email</label>
-          <input id="email" type="email" autocomplete="email" required>
-        </div>
-        <div class="field">
-          <label for="password">Password</label>
-          <input id="password" type="password" minlength="6" autocomplete="current-password" required>
-        </div>
-        <button class="primary wide" id="emailButton" type="submit">Sign in</button>
-        <button id="toggleCreate" type="button" style="margin-top:10px;width:100%">
-          Create a new account
-        </button>
-      </form>
-    </div>
-    <p class="muted">Your mobile number is collected separately. This form does not verify the number by SMS.</p>
+    <p class="muted">Choose your Google account. You do not need to type your Gmail or password into this website.</p>
   </div>
 
   <div id="signedIn" class="hidden">
     <div class="profile">
-      <img id="photo" class="avatar" alt="Customer photo">
+      <img id="photo" class="avatar" alt="Customer profile photo">
       <div>
         <strong id="customerName">Customer</strong>
-        <div id="customerEmail" class="muted"></div>
+        <div class="muted" id="customerEmail"></div>
       </div>
     </div>
 
@@ -118,17 +98,17 @@ footer{text-align:center;background:#191a20;color:#ddd;padding:22px;font-size:12
       <div class="row">
         <div class="field">
           <label for="area">Area / Village *</label>
-          <input id="area" required>
+          <input id="area" required maxlength="100">
         </div>
         <div class="field">
           <label for="city">City / District *</label>
-          <input id="city" required>
+          <input id="city" required maxlength="100">
         </div>
       </div>
       <div class="row">
         <div class="field">
           <label for="state">State *</label>
-          <input id="state" required>
+          <input id="state" required maxlength="100">
         </div>
         <div class="field">
           <label for="pinCode">6-digit PIN Code *</label>
@@ -137,7 +117,7 @@ footer{text-align:center;background:#191a20;color:#ddd;padding:22px;font-size:12
       </div>
       <div class="field">
         <label for="instructions">Delivery Instructions</label>
-        <textarea id="instructions" placeholder="Landmark or delivery note"></textarea>
+        <textarea id="instructions" maxlength="250" placeholder="Landmark or delivery note"></textarea>
       </div>
       <button class="primary wide" id="saveButton" type="submit">Save My Details</button>
       <p class="status" id="detailsStatus" aria-live="polite"></p>
@@ -157,26 +137,25 @@ footer{text-align:center;background:#191a20;color:#ddd;padding:22px;font-size:12
 <aside class="card">
   <div class="muted">B.D. FASHION STORE</div>
   <h2>Welcome to your account</h2>
-  <p class="muted">Save your address, keep your contact details updated and check your orders.</p>
+  <p class="muted">Sign in with Google, save your delivery details and check your orders.</p>
   <div class="section">
     <h2>Need help?</h2>
-    <p class="muted">Visit our <a href="./contact.html">Contact page</a> for assistance.</p>
+    <p class="muted">Visit the <a href="./contact.html">Contact page</a>.</p>
   </div>
 </aside>
 </div>
 </main>
 
-<footer>© <span id="year"></span> B.D. Fashion Store · Fashion for every day</footer>
+<footer>© <span id="year"></span> B.D. Fashion Store</footer>
 
 <script type="module">
 import { auth, googleProvider, database } from "./firebase.js";
 
 import {
   onAuthStateChanged,
+  signInWithPopup,
   signInWithRedirect,
   getRedirectResult,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
   signOut
 } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 
@@ -187,11 +166,10 @@ import {
 const $ = id => document.getElementById(id);
 $("year").textContent = new Date().getFullYear();
 
-let userNow = null;
-let creating = false;
+let currentUser = null;
 let stopOrders = null;
 
-function message(id, text, type = "") {
+function setMessage(id, text, type = "") {
   const el = $(id);
   el.textContent = text || "";
   el.className = "status " + type;
@@ -201,18 +179,17 @@ function showAccount(user) {
   $("signedOut").classList.add("hidden");
   $("signedIn").classList.remove("hidden");
   $("pageTitle").textContent = "My Account";
-  $("intro").textContent = "Manage your profile and delivery details.";
+  $("intro").textContent = "Your Google account is connected. Complete your contact and delivery details.";
   $("customerName").textContent = user.displayName || "Customer";
   $("customerEmail").textContent = user.email || "";
-  $("photo").src = user.photoURL ||
-    "https://www.gravatar.com/avatar/?d=mp&s=96";
+  $("photo").src = user.photoURL || "https://www.gravatar.com/avatar/?d=mp&s=96";
 }
 
 function showLogin() {
   $("signedIn").classList.add("hidden");
   $("signedOut").classList.remove("hidden");
   $("pageTitle").textContent = "Sign in";
-  $("intro").textContent = "Sign in with Google, then add your details.";
+  $("intro").textContent = "Continue with Google to access your account.";
   if (stopOrders) {
     stopOrders();
     stopOrders = null;
@@ -220,60 +197,38 @@ function showLogin() {
 }
 
 $("googleLogin").addEventListener("click", async () => {
-  const btn = $("googleLogin");
-  btn.disabled = true;
-  message("loginStatus", "Opening Google sign-in…");
+  const button = $("googleLogin");
+  button.disabled = true;
+  setMessage("loginStatus", "Opening Google account chooser…");
 
   try {
     googleProvider.setCustomParameters({prompt:"select_account"});
-    await signInWithRedirect(auth, googleProvider);
-  } catch (e) {
-    console.error(e);
-    message("loginStatus", (e.code || "Error") + ": " + e.message, "error");
-    btn.disabled = false;
-  }
-});
-
-getRedirectResult(auth).catch(e => {
-  console.error("Google redirect error:", e);
-  message("loginStatus", (e.code || "Error") + ": " + e.message, "error");
-});
-
-$("toggleCreate").addEventListener("click", () => {
-  creating = !creating;
-  $("emailButton").textContent = creating ? "Create Account" : "Sign in";
-  $("toggleCreate").textContent = creating
-    ? "Already registered? Sign in"
-    : "Create a new account";
-  $("password").autocomplete = creating ? "new-password" : "current-password";
-});
-
-$("emailForm").addEventListener("submit", async event => {
-  event.preventDefault();
-  const btn = $("emailButton");
-  btn.disabled = true;
-  message("loginStatus", creating ? "Creating account…" : "Signing in…");
-
-  try {
-    const email = $("email").value.trim();
-    const password = $("password").value;
-    if (creating) {
-      await createUserWithEmailAndPassword(auth, email, password);
-    } else {
-      await signInWithEmailAndPassword(auth, email, password);
+    try {
+      await signInWithPopup(auth, googleProvider);
+    } catch (error) {
+      if (error.code === "auth/popup-blocked") {
+        await signInWithRedirect(auth, googleProvider);
+        return;
+      }
+      throw error;
     }
-  } catch (e) {
-    console.error(e);
-    message("loginStatus", (e.code || "Error") + ": " + e.message, "error");
-  } finally {
-    btn.disabled = false;
+  } catch (error) {
+    console.error("Google login failed:", error);
+    setMessage("loginStatus", (error.code || "Error") + ": " + error.message, "error");
+    button.disabled = false;
   }
+});
+
+getRedirectResult(auth).catch(error => {
+  console.error("Google redirect error:", error);
+  setMessage("loginStatus", (error.code || "Error") + ": " + error.message, "error");
 });
 
 async function loadDetails(user) {
   try {
     const snap = await get(ref(database, "customers/" + user.uid));
     const d = snap.val() || {};
+
     $("fullName").value = d.fullName || user.displayName || "";
     $("mobile").value = d.mobile || "";
     $("whatsapp").value = d.whatsapp || "";
@@ -283,19 +238,21 @@ async function loadDetails(user) {
     $("state").value = d.state || "";
     $("pinCode").value = d.pinCode || "";
     $("instructions").value = d.instructions || "";
-    message("detailsStatus", snap.exists()
-      ? "Saved details loaded."
-      : "Please fill in your details and save.", "success");
-  } catch (e) {
-    console.error(e);
-    message("detailsStatus", "Could not load details: " + e.message, "error");
+
+    setMessage("detailsStatus",
+      snap.exists() ? "Saved details loaded." : "Please complete and save your details.",
+      "success");
+  } catch (error) {
+    console.error(error);
+    setMessage("detailsStatus", "Could not load profile: " + error.message, "error");
   }
 }
 
 $("detailsForm").addEventListener("submit", async event => {
   event.preventDefault();
-  if (!userNow) {
-    message("detailsStatus", "Please sign in first.", "error");
+
+  if (!currentUser) {
+    setMessage("detailsStatus", "Please sign in first.", "error");
     return;
   }
 
@@ -303,22 +260,23 @@ $("detailsForm").addEventListener("submit", async event => {
   const pinCode = $("pinCode").value.trim();
 
   if (mobile.replace(/\D/g, "").length < 10) {
-    message("detailsStatus", "Enter a valid mobile number.", "error");
-    return;
-  }
-  if (!/^\d{6}$/.test(pinCode)) {
-    message("detailsStatus", "PIN code must contain 6 digits.", "error");
+    setMessage("detailsStatus", "Enter a valid mobile number.", "error");
     return;
   }
 
-  const btn = $("saveButton");
-  btn.disabled = true;
-  message("detailsStatus", "Saving details…");
+  if (!/^\d{6}$/.test(pinCode)) {
+    setMessage("detailsStatus", "PIN code must contain 6 digits.", "error");
+    return;
+  }
+
+  const button = $("saveButton");
+  button.disabled = true;
+  setMessage("detailsStatus", "Saving details…");
 
   const details = {
-    uid: userNow.uid,
+    uid: currentUser.uid,
     fullName: $("fullName").value.trim(),
-    email: userNow.email || "",
+    email: currentUser.email || "",
     mobile,
     whatsapp: $("whatsapp").value.trim(),
     address: $("address").value.trim(),
@@ -327,23 +285,24 @@ $("detailsForm").addEventListener("submit", async event => {
     state: $("state").value.trim(),
     pinCode,
     instructions: $("instructions").value.trim(),
-    photoURL: userNow.photoURL || "",
+    photoURL: currentUser.photoURL || "",
     updatedAt: Date.now()
   };
 
   try {
-    await update(ref(database, "customers/" + userNow.uid), details);
-    message("detailsStatus", "Your details were saved successfully.", "success");
-  } catch (e) {
-    console.error(e);
-    message("detailsStatus", (e.code || "Error") + ": " + e.message +
-      " Check your Realtime Database Rules.", "error");
+    await update(ref(database, "customers/" + currentUser.uid), details);
+    setMessage("detailsStatus", "Your details were saved successfully.", "success");
+  } catch (error) {
+    console.error(error);
+    setMessage("detailsStatus",
+      (error.code || "Error") + ": " + error.message +
+      ". Check Realtime Database Rules.", "error");
   } finally {
-    btn.disabled = false;
+    button.disabled = false;
   }
 });
 
-function showOrders(data) {
+function renderOrders(data) {
   const box = $("ordersList");
   box.replaceChildren();
 
@@ -352,76 +311,82 @@ function showOrders(data) {
     return;
   }
 
-  Object.entries(data).reverse().forEach(([key, order]) => {
-    if (order === true || typeof order === "string") return;
+  for (const [key, order] of Object.entries(data).reverse()) {
+    if (!order || typeof order !== "object") continue;
 
     const card = document.createElement("div");
     card.className = "order";
+
     const title = document.createElement("strong");
     title.textContent = "Order: " + (order.orderId || key);
+
     const total = document.createElement("p");
     total.textContent = "Total: " +
       (order.total == null ? "Not available" : "₹" + order.total);
+
     const status = document.createElement("span");
     status.className = "badge";
     status.textContent = "Status: " + (order.status || "Placed");
+
     const link = document.createElement("p");
     const a = document.createElement("a");
     a.href = "./tracking.html";
     a.textContent = "Track order";
-    link.appendChild(a);
-    card.append(title, total, status, link);
-    box.appendChild(card);
-  });
+    link.append(a);
 
-  if (!box.children.length) {
-    box.textContent = "No order summaries available yet.";
+    card.append(title, total, status, link);
+    box.append(card);
   }
+
+  if (!box.children.length) box.textContent = "No order summaries found.";
 }
 
 function listenOrders(user) {
   if (stopOrders) stopOrders();
+
   stopOrders = onValue(ref(database, "ordersByUser/" + user.uid), async snap => {
     const map = snap.val();
 
     if (!map) {
-      showOrders(null);
+      renderOrders(null);
       return;
     }
 
-    const vals = Object.values(map);
-    if (vals.every(v => v === true || typeof v === "string")) {
-      const full = {};
-      for (const [key, val] of Object.entries(map)) {
-        const orderId = typeof val === "string" ? val : key;
+    const values = Object.values(map);
+
+    if (values.every(v => v === true || typeof v === "string")) {
+      const orders = {};
+
+      for (const [key, value] of Object.entries(map)) {
+        const id = typeof value === "string" ? value : key;
         try {
-          const orderSnap = await get(ref(database, "orders/" + orderId));
-          if (orderSnap.exists()) full[orderId] = orderSnap.val();
-        } catch (e) {
-          console.warn("Unable to load order", orderId, e);
+          const orderSnap = await get(ref(database, "orders/" + id));
+          if (orderSnap.exists()) orders[id] = orderSnap.val();
+        } catch (error) {
+          console.warn("Could not load order", id, error);
         }
       }
-      showOrders(full);
+
+      renderOrders(orders);
     } else {
-      showOrders(map);
+      renderOrders(map);
     }
   }, error => {
     console.error(error);
-    $("ordersList").textContent = "Unable to load orders. Check database rules.";
+    $("ordersList").textContent = "Could not load orders. Check database rules.";
   });
 }
 
 $("logout").addEventListener("click", async () => {
   try {
     await signOut(auth);
-  } catch (e) {
-    console.error(e);
-    alert("Sign out failed: " + e.message);
+  } catch (error) {
+    alert("Sign out failed: " + error.message);
   }
 });
 
 onAuthStateChanged(auth, async user => {
-  userNow = user;
+  currentUser = user;
 
   if (!user) {
     showLogin();
