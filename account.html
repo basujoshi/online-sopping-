@@ -1,1 +1,437 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#191a17"><title>My Account</title><link rel="stylesheet" href="styles.css"></head><body><header class="topbar"><a class="brand" href="index.html"><span class="mark">BD</span><span><b data-store>B.D. Fashion Store</b><small>STYLE THAT SPEAKS</small></span></a><nav class="nav"><a href="index.html">Shop</a><a href="tracking.html">Track order</a><a href="admin.html">Admin</a></nav><div class="actions"><a class="btn light" href="account.html"><span data-user>Sign in</span></a><a class="btn dark" href="cart.html">Cart <span id="cartCount" class="count">0</span></a></div></header><main class="container"><section id="authPanel" class="panel" style="max-width:500px;margin:auto"><span class="eyebrow">CUSTOMER ACCOUNT</span><h1 id="authTitle" style="font-size:42px">Sign in</h1><p class="muted">Sign in securely with Google, then add your mobile number and delivery details.</p><button id="googleSignIn" class="btn google-btn" type="button"><span class="google-mark">G</span> Continue with Google</button><p id="authError" class="error" role="status"></p><details class="email-fallback"><summary>Already have an email and password account?</summary><form id="authForm"><label class="field">Email<input id="email" type="email" required autocomplete="email"></label><label class="field">Password<input id="password" type="password" minlength="6" required autocomplete="current-password"></label><button id="authSubmit" class="btn dark" type="submit">Sign in</button><button id="toggleMode" class="btn outline" type="button">Create an account</button></form></details></section><section id="profilePanel" class="panel hidden"><h1 style="font-size:40px">Your account.</h1><div class="account-identity"><img id="profilePhoto" class="profile-photo hidden" alt="Profile photo"><div><p id="userEmail" class="muted"></p><p id="googleStatus" class="muted">Add your mobile number so the shop can contact you about delivery.</p></div></div><button id="signOut" class="btn outline">Sign out</button><h2>My details</h2><p class="muted">Save your contact and delivery details once. You can edit them later.</p><form id="customerProfileForm"><div class="formgrid"><label class="field">Full name<input id="profileName" required maxlength="80" autocomplete="name"></label><label class="field">Mobile number<input id="profilePhone" type="tel" required minlength="10" maxlength="15" autocomplete="tel" inputmode="tel" placeholder="e.g. 9876543210"></label><label class="field">WhatsApp (optional)<input id="profileWhatsapp" type="tel" maxlength="15"></label><label class="field">House / Flat<input id="profileHouse" maxlength="120"></label><label class="field span2">Street / Area / Village<input id="profileArea" maxlength="160"></label><label class="field">City / District<input id="profileCity" maxlength="80"></label><label class="field">State<input id="profileState" maxlength="80"></label><label class="field">PIN Code<input id="profilePincode" inputmode="numeric" pattern="[0-9]{6}" maxlength="6"></label><label class="field">Landmark (optional)<input id="profileLandmark" maxlength="120"></label></div><button class="btn dark" type="submit">Save my details</button><p id="profileMessage" class="error"></p></form><h2>Your orders</h2><div id="accountOrders"></div></section></main><footer>© <span id="year">2026</span> B.D. Fashion Store · Fashion for every day</footer><div id="toast" class="toast"></div><script type="module" src="site.js"></script></body></html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Account | B.D. Fashion Store</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f6f6f7;color:#191a20;font-family:Arial,sans-serif}
+header{background:white;border-bottom:1px solid #eee;padding:18px 5%;display:flex;justify-content:space-between;align-items:center;gap:15px}
+.brand{font-weight:bold;text-decoration:none;color:#191a20}
+nav{display:flex;gap:15px;flex-wrap:wrap}
+nav a{color:#333;text-decoration:none;font-size:13px}
+main{max-width:1000px;margin:40px auto;padding:0 16px}
+.layout{display:grid;grid-template-columns:1.2fr .8fr;gap:20px}
+.card{background:white;border:1px solid #e6e6e8;border-radius:14px;padding:25px}
+h1{font-family:Georgia,serif;font-size:38px;margin:12px 0}
+h2{font-size:19px}
+.muted{color:#747783;font-size:14px;line-height:1.6}
+button{cursor:pointer;border:1px solid #ddd;border-radius:8px;background:white;padding:13px;font-weight:bold}
+.primary{background:#191a20;color:white;border-color:#191a20}
+.wide{width:100%}
+button:disabled{opacity:.6}
+.field{margin:13px 0}
+label{display:block;font-size:12px;font-weight:bold;margin-bottom:7px}
+input,textarea{width:100%;padding:12px;border:1px solid #d8d9df;border-radius:8px;font:inherit}
+textarea{min-height:75px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.hidden{display:none!important}
+.status{font-size:13px;line-height:1.5;overflow-wrap:anywhere}
+.error{color:#b42318}.success{color:#18794e}
+.google{font-size:16px;margin-right:8px;color:#4285f4}
+.profile{display:flex;align-items:center;gap:12px;margin:20px 0}
+.avatar{width:48px;height:48px;border-radius:50%;object-fit:cover;background:#eee}
+.section{border-top:1px solid #eee;margin-top:22px;padding-top:20px}
+.order{border:1px solid #e5e5e5;padding:12px;border-radius:8px;margin:10px 0;font-size:13px}
+.badge{display:inline-block;background:#eee;padding:5px 8px;border-radius:20px;margin-top:7px}
+footer{text-align:center;background:#191a20;color:#ddd;padding:22px;font-size:12px}
+@media(max-width:700px){.layout{grid-template-columns:1fr}main{margin:22px auto}.card{padding:20px}h1{font-size:33px}}
+@media(max-width:420px){.row{grid-template-columns:1fr}header{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+
+<header>
+  <a class="brand" href="./index.html">B.D. Fashion Store</a>
+  <nav>
+    <a href="./index.html">Shop</a>
+    <a href="./tracking.html">Track Order</a>
+    <a href="./cart.html">Cart</a>
+    <a href="./admin.html">Admin</a>
+  </nav>
+</header>
+
+<main>
+<div class="layout">
+<section class="card">
+  <div class="muted">CUSTOMER ACCOUNT</div>
+  <h1 id="pageTitle">Sign in</h1>
+  <p class="muted" id="intro">Sign in with Google, then add your mobile number and delivery address.</p>
+
+  <div id="signedOut">
+    <button class="wide" id="googleLogin" type="button">
+      <span class="google">G</span> Continue with Google
+    </button>
+    <p class="status" id="loginStatus" aria-live="polite"></p>
+
+    <div class="section">
+      <h2>Email and Password</h2>
+      <form id="emailForm">
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" type="email" autocomplete="email" required>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" type="password" minlength="6" autocomplete="current-password" required>
+        </div>
+        <button class="primary wide" id="emailButton" type="submit">Sign in</button>
+        <button id="toggleCreate" type="button" style="margin-top:10px;width:100%">
+          Create a new account
+        </button>
+      </form>
+    </div>
+    <p class="muted">Your mobile number is collected separately. This form does not verify the number by SMS.</p>
+  </div>
+
+  <div id="signedIn" class="hidden">
+    <div class="profile">
+      <img id="photo" class="avatar" alt="Customer photo">
+      <div>
+        <strong id="customerName">Customer</strong>
+        <div id="customerEmail" class="muted"></div>
+      </div>
+    </div>
+
+    <h2>Customer Details</h2>
+    <form id="detailsForm">
+      <div class="row">
+        <div class="field">
+          <label for="fullName">Full Name *</label>
+          <input id="fullName" required maxlength="100">
+        </div>
+        <div class="field">
+          <label for="mobile">Mobile Number *</label>
+          <input id="mobile" type="tel" inputmode="tel" required placeholder="+91 9876543210">
+        </div>
+      </div>
+      <div class="field">
+        <label for="whatsapp">WhatsApp Number</label>
+        <input id="whatsapp" type="tel" inputmode="tel">
+      </div>
+      <div class="field">
+        <label for="address">House / Street Address *</label>
+        <textarea id="address" required maxlength="300"></textarea>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="area">Area / Village *</label>
+          <input id="area" required>
+        </div>
+        <div class="field">
+          <label for="city">City / District *</label>
+          <input id="city" required>
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="state">State *</label>
+          <input id="state" required>
+        </div>
+        <div class="field">
+          <label for="pinCode">6-digit PIN Code *</label>
+          <input id="pinCode" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required>
+        </div>
+      </div>
+      <div class="field">
+        <label for="instructions">Delivery Instructions</label>
+        <textarea id="instructions" placeholder="Landmark or delivery note"></textarea>
+      </div>
+      <button class="primary wide" id="saveButton" type="submit">Save My Details</button>
+      <p class="status" id="detailsStatus" aria-live="polite"></p>
+    </form>
+
+    <div class="section">
+      <h2>My Orders</h2>
+      <div id="ordersList" class="muted">Loading orders…</div>
+    </div>
+
+    <div class="section">
+      <button id="logout" class="wide" type="button">Sign Out</button>
+    </div>
+  </div>
+</section>
+
+<aside class="card">
+  <div class="muted">B.D. FASHION STORE</div>
+  <h2>Welcome to your account</h2>
+  <p class="muted">Save your address, keep your contact details updated and check your orders.</p>
+  <div class="section">
+    <h2>Need help?</h2>
+    <p class="muted">Visit our <a href="./contact.html">Contact page</a> for assistance.</p>
+  </div>
+</aside>
+</div>
+</main>
+
+<footer>© <span id="year"></span> B.D. Fashion Store · Fashion for every day</footer>
+
+<script type="module">
+import { auth, googleProvider, database } from "./firebase.js";
+
+import {
+  onAuthStateChanged,
+  signInWithRedirect,
+  getRedirectResult,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+
+import {
+  ref, get, update, onValue
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+
+const $ = id => document.getElementById(id);
+$("year").textContent = new Date().getFullYear();
+
+let userNow = null;
+let creating = false;
+let stopOrders = null;
+
+function message(id, text, type = "") {
+  const el = $(id);
+  el.textContent = text || "";
+  el.className = "status " + type;
+}
+
+function showAccount(user) {
+  $("signedOut").classList.add("hidden");
+  $("signedIn").classList.remove("hidden");
+  $("pageTitle").textContent = "My Account";
+  $("intro").textContent = "Manage your profile and delivery details.";
+  $("customerName").textContent = user.displayName || "Customer";
+  $("customerEmail").textContent = user.email || "";
+  $("photo").src = user.photoURL ||
+    "https://www.gravatar.com/avatar/?d=mp&s=96";
+}
+
+function showLogin() {
+  $("signedIn").classList.add("hidden");
+  $("signedOut").classList.remove("hidden");
+  $("pageTitle").textContent = "Sign in";
+  $("intro").textContent = "Sign in with Google, then add your details.";
+  if (stopOrders) {
+    stopOrders();
+    stopOrders = null;
+  }
+}
+
+$("googleLogin").addEventListener("click", async () => {
+  const btn = $("googleLogin");
+  btn.disabled = true;
+  message("loginStatus", "Opening Google sign-in…");
+
+  try {
+    googleProvider.setCustomParameters({prompt:"select_account"});
+    await signInWithRedirect(auth, googleProvider);
+  } catch (e) {
+    console.error(e);
+    message("loginStatus", (e.code || "Error") + ": " + e.message, "error");
+    btn.disabled = false;
+  }
+});
+
+getRedirectResult(auth).catch(e => {
+  console.error("Google redirect error:", e);
+  message("loginStatus", (e.code || "Error") + ": " + e.message, "error");
+});
+
+$("toggleCreate").addEventListener("click", () => {
+  creating = !creating;
+  $("emailButton").textContent = creating ? "Create Account" : "Sign in";
+  $("toggleCreate").textContent = creating
+    ? "Already registered? Sign in"
+    : "Create a new account";
+  $("password").autocomplete = creating ? "new-password" : "current-password";
+});
+
+$("emailForm").addEventListener("submit", async event => {
+  event.preventDefault();
+  const btn = $("emailButton");
+  btn.disabled = true;
+  message("loginStatus", creating ? "Creating account…" : "Signing in…");
+
+  try {
+    const email = $("email").value.trim();
+    const password = $("password").value;
+    if (creating) {
+      await createUserWithEmailAndPassword(auth, email, password);
+    } else {
+      await signInWithEmailAndPassword(auth, email, password);
+    }
+  } catch (e) {
+    console.error(e);
+    message("loginStatus", (e.code || "Error") + ": " + e.message, "error");
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+async function loadDetails(user) {
+  try {
+    const snap = await get(ref(database, "customers/" + user.uid));
+    const d = snap.val() || {};
+    $("fullName").value = d.fullName || user.displayName || "";
+    $("mobile").value = d.mobile || "";
+    $("whatsapp").value = d.whatsapp || "";
+    $("address").value = d.address || "";
+    $("area").value = d.area || "";
+    $("city").value = d.city || "";
+    $("state").value = d.state || "";
+    $("pinCode").value = d.pinCode || "";
+    $("instructions").value = d.instructions || "";
+    message("detailsStatus", snap.exists()
+      ? "Saved details loaded."
+      : "Please fill in your details and save.", "success");
+  } catch (e) {
+    console.error(e);
+    message("detailsStatus", "Could not load details: " + e.message, "error");
+  }
+}
+
+$("detailsForm").addEventListener("submit", async event => {
+  event.preventDefault();
+  if (!userNow) {
+    message("detailsStatus", "Please sign in first.", "error");
+    return;
+  }
+
+  const mobile = $("mobile").value.trim();
+  const pinCode = $("pinCode").value.trim();
+
+  if (mobile.replace(/\D/g, "").length < 10) {
+    message("detailsStatus", "Enter a valid mobile number.", "error");
+    return;
+  }
+  if (!/^\d{6}$/.test(pinCode)) {
+    message("detailsStatus", "PIN code must contain 6 digits.", "error");
+    return;
+  }
+
+  const btn = $("saveButton");
+  btn.disabled = true;
+  message("detailsStatus", "Saving details…");
+
+  const details = {
+    uid: userNow.uid,
+    fullName: $("fullName").value.trim(),
+    email: userNow.email || "",
+    mobile,
+    whatsapp: $("whatsapp").value.trim(),
+    address: $("address").value.trim(),
+    area: $("area").value.trim(),
+    city: $("city").value.trim(),
+    state: $("state").value.trim(),
+    pinCode,
+    instructions: $("instructions").value.trim(),
+    photoURL: userNow.photoURL || "",
+    updatedAt: Date.now()
+  };
+
+  try {
+    await update(ref(database, "customers/" + userNow.uid), details);
+    message("detailsStatus", "Your details were saved successfully.", "success");
+  } catch (e) {
+    console.error(e);
+    message("detailsStatus", (e.code || "Error") + ": " + e.message +
+      " Check your Realtime Database Rules.", "error");
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+function showOrders(data) {
+  const box = $("ordersList");
+  box.replaceChildren();
+
+  if (!data || typeof data !== "object" || !Object.keys(data).length) {
+    box.textContent = "No orders found for this account yet.";
+    return;
+  }
+
+  Object.entries(data).reverse().forEach(([key, order]) => {
+    if (order === true || typeof order === "string") return;
+
+    const card = document.createElement("div");
+    card.className = "order";
+    const title = document.createElement("strong");
+    title.textContent = "Order: " + (order.orderId || key);
+    const total = document.createElement("p");
+    total.textContent = "Total: " +
+      (order.total == null ? "Not available" : "₹" + order.total);
+    const status = document.createElement("span");
+    status.className = "badge";
+    status.textContent = "Status: " + (order.status || "Placed");
+    const link = document.createElement("p");
+    const a = document.createElement("a");
+    a.href = "./tracking.html";
+    a.textContent = "Track order";
+    link.appendChild(a);
+    card.append(title, total, status, link);
+    box.appendChild(card);
+  });
+
+  if (!box.children.length) {
+    box.textContent = "No order summaries available yet.";
+  }
+}
+
+function listenOrders(user) {
+  if (stopOrders) stopOrders();
+  stopOrders = onValue(ref(database, "ordersByUser/" + user.uid), async snap => {
+    const map = snap.val();
+
+    if (!map) {
+      showOrders(null);
+      return;
+    }
+
+    const vals = Object.values(map);
+    if (vals.every(v => v === true || typeof v === "string")) {
+      const full = {};
+      for (const [key, val] of Object.entries(map)) {
+        const orderId = typeof val === "string" ? val : key;
+        try {
+          const orderSnap = await get(ref(database, "orders/" + orderId));
+          if (orderSnap.exists()) full[orderId] = orderSnap.val();
+        } catch (e) {
+          console.warn("Unable to load order", orderId, e);
+        }
+      }
+      showOrders(full);
+    } else {
+      showOrders(map);
+    }
+  }, error => {
+    console.error(error);
+    $("ordersList").textContent = "Unable to load orders. Check database rules.";
+  });
+}
+
+$("logout").addEventListener("click", async () => {
+  try {
+    await signOut(auth);
+  } catch (e) {
+    console.error(e);
+    alert("Sign out failed: " + e.message);
+  }
+});
+
+onAuthStateChanged(auth, async user => {
+  userNow = user;
+
+  if (!user) {
+    showLogin();
+    return;
+  }
+
+  showAccount(user);
+  await loadDetails(user);
+  listenOrders(user);
+});
+</script>
+</body>
+</html>
