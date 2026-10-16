@@ -1,0 +1,53 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "products": {
+      ".read": true,
+      "$id": {
+        ".write": "auth != null && auth.token.email === 'your-admin@gmail.com'",
+        "stock": {
+          ".write": "auth != null && newData.isNumber() && newData.val() >= 0 && data.isNumber() && newData.val() <= data.val()"
+        }
+      }
+    },
+    "settings": {
+      "store": {
+        ".read": true,
+        ".write": "auth != null && auth.token.email === 'your-admin@gmail.com'"
+      }
+    },
+    "customers": {
+      ".read": "auth != null && auth.token.email === 'your-admin@gmail.com'",
+      "$uid": {
+        ".read": "auth != null && (auth.uid === $uid || auth.token.email === 'your-admin@gmail.com')",
+        ".write": "auth != null && (auth.uid === $uid || auth.token.email === 'your-admin@gmail.com')"
+      }
+    },
+    "orders": {
+      ".read": "auth != null && auth.token.email === 'your-admin@gmail.com'",
+      "$id": {
+        ".read": "auth != null && (data.child('uid').val() === auth.uid || auth.token.email === 'your-admin@gmail.com')",
+        ".write": "auth != null && ((!data.exists() && newData.child('uid').val() === auth.uid && newData.child('items').exists() && newData.child('total').isNumber()) || auth.token.email === 'your-admin@gmail.com')"
+      }
+    },
+    "ordersByUser": {
+      "$uid": {
+        ".read": "auth != null && (auth.uid === $uid || auth.token.email === 'your-admin@gmail.com')",
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    },
+    "stockMovements": {
+      ".read": "auth != null && auth.token.email === 'your-admin@gmail.com'",
+      ".write": "auth != null && auth.token.email === 'your-admin@gmail.com'"
+    },
+    "orderCancelRequests": {
+      ".read": "auth != null && auth.token.email === 'your-admin@gmail.com'",
+      "$orderId": {
+        ".read": "auth != null && (auth.token.email === 'your-admin@gmail.com' || root.child('orders').child($orderId).child('uid').val() === auth.uid)",
+        ".write": "auth != null && (auth.token.email === 'your-admin@gmail.com' || (auth.uid === newData.child('uid').val() && root.child('orders').child($orderId).child('uid').val() === auth.uid && (!data.exists() || data.child('status').val() === 'Rejected')))",
+        ".validate": "newData.hasChildren(['uid','orderId','status','createdAt'])"
+      }
+    }
+  }
+}
